@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Emulator Box</title>
+<style>
+  :root {
+    --cream: #f8f6ef;
+    --paper: #fffdf7;
+    --ink: #232733;
+    --ink-soft: #4c5265;
+    --orange: #eb694b;
+    --orange-dark: #c94f33;
+    --line: #e3ddcd;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--cream);
+    color: var(--ink);
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px 64px; }
+
+  header.hero {
+    padding: 56px 0 8px;
+    text-align: left;
+  }
+  .eyebrow {
+    letter-spacing: 0.22em;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--orange-dark);
+    text-transform: uppercase;
+    margin: 0 0 10px;
+  }
+  h1 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(40px, 6vw, 64px);
+    line-height: 1.05;
+    margin: 0 0 14px;
+    font-weight: 700;
+  }
+  h1 em { color: var(--orange); font-style: italic; }
+  .lead {
+    font-size: 19px;
+    color: var(--ink-soft);
+    max-width: 46em;
+    margin: 0 0 18px;
+  }
+  .hero-photo {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 14px;
+    margin: 20px 0 6px;
+  }
+  .counts {
+    display: inline-block;
+    background: var(--ink);
+    color: var(--cream);
+    border-radius: 999px;
+    padding: 6px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .tip { font-size: 14px; color: var(--ink-soft); max-width: 46em; }
+  .tip strong { color: var(--ink); }
+
+  nav.groups {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin: 26px 0 6px;
+  }
+  nav.groups a {
+    color: var(--ink);
+    text-decoration: none;
+    border: 1.5px solid var(--ink);
+    border-radius: 999px;
+    padding: 5px 14px;
+    font-size: 14px;
+    font-weight: 600;
+    background: var(--paper);
+  }
+  nav.groups a:hover { background: var(--ink); color: var(--cream); }
+
+  section.group { margin-top: 44px; }
+  section.group h2 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 30px;
+    margin: 0 0 4px;
+  }
+  section.group .group-note { color: var(--ink-soft); margin: 0 0 18px; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 18px;
+  }
+  .card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 20px 20px 16px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 1px 3px rgba(35, 39, 51, 0.06);
+  }
+  .card .icon { font-size: 34px; line-height: 1; margin-bottom: 10px; }
+  .card h3 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 21px;
+    margin: 0 0 8px;
+    line-height: 1.25;
+  }
+  .card p.hook { margin: 0 0 12px; color: var(--ink-soft); font-size: 15px; flex: 1; }
+  .card .concepts { font-size: 12.5px; color: var(--ink-soft); margin: 0 0 14px; }
+  .card .room {
+    font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--orange-dark); margin: 0 0 12px;
+  }
+  .actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  a.btn-play {
+    background: var(--orange);
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700;
+    padding: 9px 20px;
+    border-radius: 9px;
+    font-size: 15px;
+  }
+  a.btn-play:hover { background: var(--orange-dark); }
+  a.btn-lesson {
+    color: var(--ink);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 8px 16px;
+    border: 1.5px solid var(--ink);
+    border-radius: 9px;
+    font-size: 15px;
+    background: transparent;
+  }
+  a.btn-lesson:hover { background: var(--ink); color: var(--cream); }
+  .no-lesson {
+    font-size: 13px;
+    color: var(--ink-soft);
+    border: 1.5px dashed var(--line);
+    padding: 8px 14px;
+    border-radius: 9px;
+  }
+
+  footer {
+    margin-top: 64px;
+    border-top: 1px solid var(--line);
+    padding-top: 20px;
+    color: var(--ink-soft);
+    font-size: 14.5px;
+  }
+
+  .baton {
+    margin-top: 26px;
+    background: var(--ink);
+    color: var(--cream);
+    border-radius: 14px;
+    padding: 22px 24px;
+    box-shadow: 0 2px 10px rgba(35, 39, 51, 0.18);
+  }
+  .baton h3 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 24px;
+    margin: 0 0 8px;
+  }
+  .baton p { color: #d8d5c9; max-width: 52em; margin: 0 0 6px; }
+  .baton-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+  .baton button {
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 9px 18px;
+    border-radius: 9px;
+    border: 1.5px solid var(--cream);
+    background: transparent;
+    color: var(--cream);
+  }
+  .baton button.primary { background: var(--orange); border-color: var(--orange); color: #fff; }
+  .baton button:disabled { opacity: 0.45; cursor: default; }
+  .baton-status { font-size: 14.5px; margin-top: 12px; color: #bfe3c8; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <p class="eyebrow">Nerd Heaven · Everyday Cool</p>
+    <h1>The Emulator <em>Box</em></h1>
+    <p class="lead">Nine real machines, shipped whole — and not one game among them. The Box
+      brings the consoles; you bring the software: cartridges, disk images, and romsets from
+      your own library, loaded from your own files, right here on this machine. Nothing
+      uploads, nothing phones home. Each machine keeps its audit lesson beside it — what was
+      measured, what bends, and what to bring.</p>
+    <span class="counts">9 machines · 9 lessons attached</span>
+    <p class="tip"><strong>Finding your way back:</strong> from any console, use the
+      browser-style back gesture — <strong>Alt + ←</strong> or your mouse's back button — to
+      return to this shelf. One honest note: the DOS Console's core asks for cross-origin
+      isolation this window can't give it, so it points you at the Baton Box below — start the
+      box and DOS runs there in full.</p>
+    <nav class="groups" aria-label="On this shelf">
+      <a href="#emulators">The Nine Machines</a>
+      <a href="#baton-box">The Baton Box</a>
+    </nav>
+  </header>
+
+  <section class="group" id="emulators">
+    <h2>The Emulator Box</h2>
+    <p class="group-note">Nine real machines from Nerd Heaven, bundled whole — bring your own
+      cartridges, disks, and program files from your own library; this Box ships the machines,
+      never the games. Each console keeps its audit lesson: what was measured, what bends.</p>
+    <div class="grid">
+
+      <article class="card">
+        <div class="icon">🖥️</div>
+        <h3>The 6502 Bench</h3>
+        <p class="hook">A bare NMOS 6502 with a screen, a keyboard, and a two-pass assembler — write assembly or BASIC, load your own .bin files at the Drive Shelf, and hand the whole machine to the next player as a Machine Code.</p>
+        <p class="concepts">6502 Assembly · BASIC · Save-State Codes</p>
+        <p class="room">Nerd Heaven — Emulator Box</p>
+        <div class="actions">
+          <a class="btn-play" href="emulators/the-6502-bench.html">▶ Play</a>
+          <a class="btn-lesson" href="emulators/the-6502-bench-lesson.html">📖 Lesson</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="icon">🕹️</div>
+        <h3>The 2600 Console</h3>
+        <p class="hook">Javatari, vendored unmodified — slot your own Atari 2600 cartridges from your library and play, keyboard or gamepad. The audit's test cartridge drew exactly the picture the code says it should.</p>
+        <p class="concepts">Atari 2600 · Javatari · Bring Your Own Cartridges</p>
+        <p class="room">Nerd Heaven — Emulator Box</p>
+        <div class="actions">
+          <a class="btn-play" href="emulators/the-2600-console.html">▶ Play</a>
+          <a class="btn-lesson" href="emulators/the-2600-console-lesson.html">📖 Lesson</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="icon">🎮</div>
+        <h3>The NES Console</h3>
+        <p class="hook">JSNES in one self-contained page — pick a cartridge from your own library and the console names it, and its mapper, before it plays. Its State Codes ride the Baton Box below.</p>
+        <p class="concepts">NES · JSNES · 22 Mappers · State Codes</p>
+        <p class="room">Nerd Heaven — Emulator Box</p>
+        <div class="actions">
+          <a class="btn-play" href="emulators/the-nes-console.html">▶ Play</a>
+          <a class="btn-lesson" href="emulators/the-nes-console-lesson.html">📖 Lesson</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="icon">👾</div>
+        <h3>The SNES Console</h3>
+        <p class="hook">EmulatorJS with the Snes9x core, vendored for offline play. Bring your own .smc or .sfc — and trust the key map printed on the page: it was measured at the cartridge, and the lesson tells the story of the day it wasn't.</p>
+        <p class="concepts">SNES · Snes9x · Measured Key Map</p>
+        <p class="room">Nerd Heaven — Emulator Box</p>
+        <div class="actions">
+          <a class="btn-play" href="emulators/the-snes-console.html">▶ Play</a>
+          <a class="btn-lesson" href="emulators/the-snes-console-lesson.html">📖 Lesson</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="icon">💾</div>
+        <h3>The DOS Console</h3>
+        <p class="hook">DOSBox Pure — zip a DOS drive folder, mount it as C:, and boot to the prompt: DIR, CD, and your own programs. In this window its core asks for cross-origin isolation the app can't give it, so it will point you at the Baton Box below — where it genuinely runs.</p>
+        <p class="concepts">MS-DOS · DOSBox Pure · Mount Your Own C:</p>
+        <p class="room">Nerd Heaven — Emulator Box</p>
+        <div class="actions">
+          <a class="btn-play" href="emulators/the-dos-console.html">▶ Play</a>
+          <a class="btn-lesson" href="emulators/the-dos-console-lesson.html">📖 Lesson</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="icon">🍎</div>
+        <h3>The Apple IIe Console</h3>
+        <p class="hook">Apple2TS — an enhanced Apple IIe in the window, Caps Lock on and all. Bring your own disk images; the Oregon Trail door on its page opens the Internet Archive's own player.</p>
+        <p class="concepts">Apple IIe · Apple2TS · Bring Your Own Disks</p>
+        <p class="room">Nerd Heaven — Emulator Box</p>
+        <div class="actions">
+          <a class="btn-play" href="emulators/the-apple-iie-console.html">▶ Play</a>
+          <a class="btn-lesson" href="emulators/the-apple-iie-console-lesson.html">📖 Lesson</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="icon">🪙</div>
+        <h3>The MAME Console</h3>
+        <p class="hook">MAME 2003-Plus through EmulatorJS, vendored unmodified — bring your own romset zips, work the stick left-then-right past the copyright screen, then V for a coin and Enter to start: the liturgy was measured at the cabinet, and the lesson says why it isn't 5 and 1.</p>
+        <p class="concepts">Arcade · MAME 2003-Plus · Bring Your Own Romsets</p>
+        <p class="room">Nerd Heaven — Emulator Box</p>
+        <div class="actions">
+          <a class="btn-play" href="emulators/the-mame-console.html">▶ Play</a>
+          <a class="btn-lesson" href="emulators/the-mame-console-lesson.html">📖 Lesson</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="icon">🚀</div>
+        <h3>The 7800 Console</h3>
+        <p class="hook">ProSystem through EmulatorJS — slot your own .a78 cartridges and play. The key map was measured at the cartridge: X is button 1, Z is button 2, and the lesson tells how the machine's one-button mode nearly fooled the audit.</p>
+        <p class="concepts">Atari 7800 · ProSystem · .a78 Cartridges</p>
+        <p class="room">Nerd Heaven — Emulator Box</p>
+        <div class="actions">
+          <a class="btn-play" href="emulators/the-7800-console.html">▶ Play</a>
+          <a class="btn-lesson" href="emulators/the-7800-console-lesson.html">📖 Lesson</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="icon">🔢</div>
+        <h3>The 5200 Console</h3>
+        <p class="hook">The a5200 core through EmulatorJS — bring a cartridge AND its BIOS (5200.rom), both from your own library; the page refuses in plain words without the BIOS. The famous keypad is mapped to the keyboard, and the lesson marks exactly where the audit's measurement boundary lies.</p>
+        <p class="concepts">Atari 5200 · a5200 · Bring Your Own BIOS</p>
+        <p class="room">Nerd Heaven — Emulator Box</p>
+        <div class="actions">
+          <a class="btn-play" href="emulators/the-5200-console.html">▶ Play</a>
+          <a class="btn-lesson" href="emulators/the-5200-console-lesson.html">📖 Lesson</a>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="baton" id="baton-box">
+      <h3>📦 The Baton Box — the family post office</h3>
+      <p>The Baton Box is a small server that runs on this computer. It serves the DOS Console
+        with the cross-origin isolation headers it needs, and it relays the pass-and-play games —
+        The Relay, the 6502 Bench, the NES, SNES, and DOS consoles — to everyone on your home
+        network: a phone, a tablet, the kids' iPads, anything on the same Wi-Fi as this machine.</p>
+      <p>Start it here, then open the box in your browser to host or join a game. Stop puts it
+        away. It runs with this computer's Python — the same Python the standalone Baton Box uses —
+        and it only ever serves your home network.</p>
+      <div class="baton-actions">
+        <button class="primary" id="baton-start" type="button">▶ Start the Baton Box</button>
+        <button id="baton-stop" type="button">■ Stop</button>
+        <button id="baton-open" type="button">🌐 Open the Box</button>
+      </div>
+      <p class="baton-status" id="baton-status">Checking the box…</p>
+    </div>
+  </section>
+
+  <footer>
+    <p>Part of Everyday Cool — the full workshops live at caeled.github.io/everyday-cool ·
+      Free to explore. Built with AI assistance. Curated by a human.</p>
+  </footer>
+
+</div>
+<script>
+(function () {
+  var status = document.getElementById('baton-status');
+  var btnStart = document.getElementById('baton-start');
+  var btnStop = document.getElementById('baton-stop');
+  var btnOpen = document.getElementById('baton-open');
+  var invoke = (window.__TAURI__ && window.__TAURI__.core && window.__TAURI__.core.invoke) || null;
+  if (!invoke) {
+    status.textContent = 'The Baton Box controls work in the desktop app — this page is being read somewhere else.';
+    btnStart.disabled = btnStop.disabled = btnOpen.disabled = true;
+    return;
+  }
+  function show(s) {
+    status.textContent = s.message + (s.running ? '  ' + s.url : '');
+    btnStart.disabled = !!s.running;
+    btnStop.disabled = !s.running;
+  }
+  function fail(e) { status.textContent = 'The box said no: ' + e; }
+  invoke('baton_status').then(show).catch(fail);
+  btnStart.addEventListener('click', function () {
+    status.textContent = 'Starting the Baton Box…';
+    btnStart.disabled = true;
+    invoke('baton_start').then(show).catch(function (e) { fail(e); btnStart.disabled = false; });
+  });
+  btnStop.addEventListener('click', function () {
+    invoke('baton_stop').then(show).catch(fail);
+  });
+  btnOpen.addEventListener('click', function () {
+    invoke('baton_open').then(function () {}, function (e) { fail(e); });
+  });
+})();
+</script>
+</body>
+</html>
