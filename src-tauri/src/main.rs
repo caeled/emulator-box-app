@@ -561,9 +561,7 @@ fn dos_open(
                 .to_string(),
         );
     }
-    let url: tauri::Url = DOS_CONSOLE_URL
-        .parse()
-        .map_err(|e| e.to_string())?;
+    let url = tauri::Url::parse(DOS_CONSOLE_URL).map_err(|e| e.to_string())?;
     if let Some(win) = handle.get_webview_window("dos-console") {
         let _ = win.navigate(url);
         let _ = win.set_focus();
