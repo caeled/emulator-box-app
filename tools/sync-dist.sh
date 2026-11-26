@@ -75,7 +75,7 @@ the-mame-console.html|the-mame-console-lesson.html|The MAME Console
 the-7800-console.html|the-7800-console-lesson.html|The 7800 Console
 the-5200-console.html|the-5200-console-lesson.html|The 5200 Console
 EMU_LIST
-for rack in javatari jsnes emulatorjs-snes emulatorjs-dos apple2ts emulatorjs-mame emulatorjs-7800 emulatorjs-5200 emulatorjs-genesis jsvecx; do
+for rack in javatari jsnes emulatorjs-snes nostalgist-snes emulatorjs-dos jsdos-dos apple2ts emulatorjs-mame emulatorjs-7800 emulatorjs-5200 emulatorjs-genesis jsvecx; do
   cp -r "$EMU_SRC/$rack" "$EMU/$rack"
 done
 cat > "$EMU/index.html" <<'EMU_STUB'
@@ -91,7 +91,7 @@ cat > "$EMU/index.html" <<'EMU_STUB'
 </body>
 </html>
 EMU_STUB
-echo "  emulators: $emu_count consoles, racks javatari jsnes emulatorjs-snes emulatorjs-dos apple2ts emulatorjs-mame emulatorjs-7800 emulatorjs-5200 emulatorjs-genesis jsvecx -> $EMU"
+echo "  emulators: $emu_count consoles, racks javatari jsnes emulatorjs-snes nostalgist-snes emulatorjs-dos jsdos-dos apple2ts emulatorjs-mame emulatorjs-7800 emulatorjs-5200 emulatorjs-genesis jsvecx -> $EMU"
 
 # ---------------------------------------------------------------------------
 # The Baton Box server bundle (src-tauri/resources/baton-box/): what the
