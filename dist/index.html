@@ -204,8 +204,8 @@
     <p class="tip"><strong>Finding your way back:</strong> from any console, use the
       browser-style back gesture — <strong>Alt + ←</strong> or your mouse's back button — to
       return to this shelf. One honest note: the DOS Console's core asks for cross-origin
-      isolation this window can't give it, so its Play button starts the Baton Box for you
-      and opens the console through the box, in its own window — where DOS runs in full.</p>
+      isolation this window can't give it, so it points you at the Baton Box below — start the
+      box and DOS runs there in full.</p>
     <nav class="groups" aria-label="On this shelf">
       <a href="#emulators">The Eleven Machines</a>
       <a href="#baton-box">The Baton Box</a>
@@ -282,14 +282,13 @@
       <article class="card">
         <div class="icon">💾</div>
         <h3>The DOS Console</h3>
-        <p class="hook">DOSBox Pure — mount a DOS drive folder as C: (or a zip of it) and boot to the prompt: DIR, CD, and your own programs. Its core needs cross-origin isolation this window can't give it, so Play starts the Baton Box and opens the console through it, in its own window — where it genuinely runs.</p>
+        <p class="hook">DOSBox Pure — zip a DOS drive folder, mount it as C:, and boot to the prompt: DIR, CD, and your own programs. In this window its core asks for cross-origin isolation the app can't give it, so it will point you at the Baton Box below — where it genuinely runs.</p>
         <p class="concepts">MS-DOS · DOSBox Pure · Mount Your Own C:</p>
         <p class="room">Nerd Heaven — Emulator Box</p>
         <div class="actions">
-          <button class="btn-play" id="dos-play" type="button">▶ Play — through the Baton Box</button>
+          <a class="btn-play" href="emulators/the-dos-console.html">▶ Play</a>
           <a class="btn-lesson" href="emulators/the-dos-console-lesson.html">📖 Lesson</a>
         </div>
-        <p class="hook" id="dos-note" hidden></p>
       </article>
 
       <article class="card">
@@ -409,23 +408,6 @@
   btnOpen.addEventListener('click', function () {
     invoke('baton_open').then(function () {}, function (e) { fail(e); });
   });
-  var btnDos = document.getElementById('dos-play');
-  var dosNote = document.getElementById('dos-note');
-  if (btnDos) {
-    btnDos.addEventListener('click', function () {
-      dosNote.hidden = false;
-      dosNote.textContent = 'Starting the Baton Box and opening the DOS Console…';
-      btnDos.disabled = true;
-      invoke('dos_open').then(function (msg) {
-        dosNote.textContent = msg + ' Mount your drive folder there — or a zip of it.';
-        btnDos.disabled = false;
-        invoke('baton_status').then(show).catch(function () {});
-      }, function (e) {
-        dosNote.textContent = 'The DOS Console could not open: ' + e;
-        btnDos.disabled = false;
-      });
-    });
-  }
 })();
 </script>
 </body>

@@ -407,12 +407,24 @@ fn ensure_baton(
     let python = find_python().ok_or_else(|| {
         "Python was not found on this computer — the Baton Box needs Python 3, the same one the standalone box uses.".to_string()
     })?;
+    // The child's stderr goes to a log file in the runtime dir, never
+    // the void: the box's first field failure (26 November 2026) died
+    // instantly with its traceback sent to Stdio::null, and the panel
+    // could only say "stopped as soon as it started." Now a death like
+    // that names its real error in the message below.
+    let err_log_path = dir.join("baton-box-error.log");
+    let err_stdio = std::fs::OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open(&err_log_path)
+        .map(std::process::Stdio::from)
+        .unwrap_or_else(|_| std::process::Stdio::null());
     let mut cmd = std::process::Command::new(&python);
     cmd.arg("baton_box.py")
         .current_dir(&dir)
         .stdin(std::process::Stdio::null())
         .stdout(std::process::Stdio::null())
-        .stderr(std::process::Stdio::null());
+        .stderr(err_stdio);
     #[cfg(windows)]
     {
         // No console window flashing over the shelf: the box is a
@@ -427,10 +439,28 @@ fn ensure_baton(
     // plainly and name the folder where running it by hand shows why.
     std::thread::sleep(std::time::Duration::from_millis(700));
     match child.try_wait() {
-        Ok(Some(status)) => Err(format!(
-            "The Baton Box stopped as soon as it started ({status}). Its files live in {} — running baton_box.py there by hand will show the error.",
-            dir.display()
-        )),
+        Ok(Some(status)) => {
+            let tail = std::fs::read_to_string(&err_log_path)
+                .unwrap_or_default()
+                .trim()
+                .chars()
+                .rev()
+                .take(600)
+                .collect::<String>()
+                .chars()
+                .rev()
+                .collect::<String>();
+            if tail.is_empty() {
+                Err(format!(
+                    "The Baton Box stopped as soon as it started ({status}). Its files live in {} — running baton_box.py there by hand will show the error.",
+                    dir.display()
+                ))
+            } else {
+                Err(format!(
+                    "The Baton Box stopped as soon as it started ({status}). The error it left behind:\n{tail}"
+                ))
+            }
+        }
         _ => {
             *state.child.lock().unwrap() = Some(child);
             Ok(BatonStatus {
