@@ -1,22 +1,24 @@
 # The Emulator Box
 
-A standalone desktop package containing **the nine machines of Nerd Heaven's
+A standalone desktop package containing **the eleven machines of Nerd Heaven's
 Emulator Box, with their audit lessons attached** — and nothing else. Where
 Dad's Arcade is the whole games shelf, the Emulator Box is just the machines:
-one shelf of nine consoles, a Play button and a 📖 Lesson button for each,
+one shelf of eleven consoles, a Play button and a 📖 Lesson button for each,
 and a Start-the-Baton-Box control. The Box ships the machines, never the
 games — players bring cartridges, disk images, and romsets from their own
 libraries, loaded from their own files. Nothing uploads.
 
-## The nine machines
+## The eleven machines
 
 - **The 6502 Bench** — a bare NMOS 6502 with assembler, BASIC, and a Drive Shelf
 - **The 2600 Console** — Javatari, vendored unmodified (AGPL v3)
 - **The NES Console** — JSNES in one self-contained page (Apache-2.0)
 - **The SNES Console** — EmulatorJS with the Snes9x core, vendored unmodified
+- **The Genesis Console** — EmulatorJS, vendored unmodified; its key map was measured at the cartridge
 - **The DOS Console** — DOSBox Pure through EmulatorJS; runs in full through
   the Baton Box (its core needs cross-origin isolation the app window can't give it)
 - **The Apple IIe Console** — Apple2TS 3.8.0, vendored unmodified (MIT)
+- **The Vectrex Console** — jsVecX, vendored unmodified; Mine Storm is built into the machine itself
 - **The MAME Console** — MAME 2003-Plus through EmulatorJS, vendored unmodified
 - **The 7800 Console** — ProSystem through EmulatorJS (GPL-2.0)
 - **The 5200 Console** — the a5200 core through EmulatorJS (GPL-2.0); bring
