@@ -359,6 +359,15 @@ fn baton_start(
     handle: AppHandle,
     state: tauri::State<'_, BatonState>,
 ) -> Result<BatonStatus, String> {
+    ensure_baton(&handle, &state)
+}
+
+/// Start the box if it is not already running (the body of baton_start,
+/// factored out so dos_open can bring the box up itself).
+fn ensure_baton(
+    handle: &AppHandle,
+    state: &BatonState,
+) -> Result<BatonStatus, String> {
     {
         let mut guard = state.child.lock().unwrap();
         if let Some(child) = guard.as_mut() {
@@ -394,7 +403,7 @@ fn baton_start(
         }
         BatonProbe::Down => {}
     }
-    let dir = baton_runtime_dir(&handle)?;
+    let dir = baton_runtime_dir(handle)?;
     let python = find_python().ok_or_else(|| {
         "Python was not found on this computer — the Baton Box needs Python 3, the same one the standalone box uses.".to_string()
     })?;
@@ -480,6 +489,64 @@ fn baton_open(handle: AppHandle) -> Result<(), String> {
         .map_err(|e| e.to_string())
 }
 
+const DOS_CONSOLE_URL: &str =
+    "http://127.0.0.1:8917/games/the-dos-console/the-dos-console.html";
+
+/// The DOS Console's one-click door (v1.0.2). Its DOSBox Pure core is a
+/// threaded build: it needs a cross-origin isolated page, and the app's
+/// own window — serving the bundle through the asset protocol, which
+/// sends no isolation headers — can never give it one. Field report,
+/// 26 November 2026: the shelf card's Play opened the bundled page,
+/// which read Steven's archives perfectly and then refused to switch
+/// on, in exactly those words. The Baton Box CAN give it a home: it
+/// serves this same console over http://127.0.0.1 with both headers.
+/// So Play now brings the box up (if it is not already) and opens the
+/// console through the box, in its own window — one click, no panel
+/// dance, and the shelf stays where it was.
+#[tauri::command]
+fn dos_open(
+    handle: AppHandle,
+    state: tauri::State<'_, BatonState>,
+) -> Result<String, String> {
+    let status = baton_status_now(&state);
+    if !status.running {
+        if status.state == "taken" {
+            return Err(status.message);
+        }
+        ensure_baton(&handle, &state)?;
+    }
+    // Wait for the box to answer as itself (the start path sleeps
+    // briefly, but a cold Python can take a beat longer to bind).
+    let mut ours = false;
+    for _ in 0..24 {
+        if matches!(baton_probe(), BatonProbe::Ours) {
+            ours = true;
+            break;
+        }
+        std::thread::sleep(std::time::Duration::from_millis(150));
+    }
+    if !ours {
+        return Err(
+            "The Baton Box did not answer on port 8917, so the DOS Console has no isolated home to open in. Try Start on the Baton Box panel below, and watch what it reports."
+                .to_string(),
+        );
+    }
+    let url: tauri::Url = DOS_CONSOLE_URL
+        .parse()
+        .map_err(|e| e.to_string())?;
+    if let Some(win) = handle.get_webview_window("dos-console") {
+        let _ = win.navigate(url);
+        let _ = win.set_focus();
+        return Ok("The DOS Console is open in its own window.".into());
+    }
+    WebviewWindowBuilder::new(&handle, "dos-console", WebviewUrl::External(url))
+        .title("The DOS Console — through the Baton Box")
+        .inner_size(1120.0, 860.0)
+        .build()
+        .map_err(|e| e.to_string())?;
+    Ok("The DOS Console is open in its own window.".into())
+}
+
 fn main() {
     let app = tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
@@ -490,7 +557,8 @@ fn main() {
             baton_start,
             baton_stop,
             baton_status,
-            baton_open
+            baton_open,
+            dos_open
         ])
         .menu(|handle| {
             // The main app's File | Help shape, adapted: the Emulator
